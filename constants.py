@@ -1,0 +1,2 @@
+TRAINING_DATA_PATH = "Data/"
+VAL_DATA_PATH = "Data/"
