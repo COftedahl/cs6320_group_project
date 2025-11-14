@@ -1,10 +1,19 @@
 from enum import Enum
 
-RAW_DATA_PATH = "./data/raw/"
-CLEANED_DATA_PATH = "./data/clean/"
-FINAL_DATA_PATH = "./data/final/"
+RAW_DATA_PATH = "./Data/raw/"
+CLEANED_DATA_PATH = "./Data/clean/"
+FINAL_DATA_PATH = "./Data/final/"
+TRAINING_DATA_PATH = CLEANED_DATA_PATH + "Sentiment_Analysis.csv"
+VAL_DATA_PATH = ""
 USER_AT_TOKEN = "<atToken>"
+TEXT_COLUMN_NAME = "text"
+VALUE_COLUMN_NAME = "values"
+
 class MODEL_OPTIONS(Enum):
-  BERT_MULTILINGUAL = "https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment"
-  SENTIMENT_ANALYSIS_BERT = "https://huggingface.co/MarieAngeA13/Sentiment-Analysis-BERT"
-  TWITTER_SENTIMENT_ANALYSIS_BERT = "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest"
+  BERT_MULTILINGUAL = "nlptown/bert-base-multilingual-uncased-sentiment" # "https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment"
+  SENTIMENT_ANALYSIS_BERT = "MarieAngeA13/Sentiment-Analysis-BERT" # "https://huggingface.co/MarieAngeA13/Sentiment-Analysis-BERT"
+  TWITTER_SENTIMENT_ANALYSIS_BERT = "cardiffnlp/twitter-roberta-base-sentiment-latest" # "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest"
+
+
+
+# https://solutionfall.com/question/why-is-the-model-not-returning-loss-from-inputs-in-trainertrain-resulting-in-a-valueerror/#:~:text=To%20address%20this%20issue%20and%20ensure%20that%20the,returns%20the%20loss%20value%20in%20the%20%60compute_loss%60%20function.

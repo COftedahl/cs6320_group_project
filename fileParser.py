@@ -1,3 +1,5 @@
+from constants import TEXT_COLUMN_NAME, VALUE_COLUMN_NAME
+
 class FileParser: 
   def __init__(self): 
     pass
@@ -6,4 +8,23 @@ class FileParser:
   # @param path: string indicating the path to the file to parse
   # @return: array of the data entries found in the file
   def parseFile(self, path): 
-    pass
+    # lines = [] # entries of format {"text": text, "label": sentimentValue}
+    datasetDict = {TEXT_COLUMN_NAME: [], VALUE_COLUMN_NAME: []}
+    try: 
+      with open(path) as file:
+        for x in file:
+          indexOfEndOfText = x.rfind(",")
+          # lines.append({"text": x[0: indexOfEndOfText], "label": x.replace("\n","")[indexOfEndOfText + 1:]})
+          datasetDict[TEXT_COLUMN_NAME].append(x[0: indexOfEndOfText])
+          datasetDict[VALUE_COLUMN_NAME].append(x.replace("\n","")[indexOfEndOfText + 1:])
+        file.close()
+    except FileNotFoundError:
+      raise FileNotFoundError(f"File not found: {path}")
+    except UnicodeDecodeError as e:
+      raise ValueError(f"Cannot decode file {path} with utf-8 encoding: {e}")
+    except PermissionError:
+      raise PermissionError(f"Permission denied reading file: {path}")
+    except Exception as e: 
+      raise RuntimeError(f"Unexpected error reading file {path}: {e}")
+    return datasetDict
+    # return lines
