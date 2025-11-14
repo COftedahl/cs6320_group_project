@@ -124,6 +124,6 @@ def splitData(file, lines):
 # parseTrain()
 # parseSentiment_Analysis()
 
-splitData("Tweets.csv", 47480)
-splitData("Sentiment_Analysis.csv", 40000)
-splitData("sentiment140.csv", 1600000)
+# splitData("Tweets.csv", 47480)
+# splitData("Sentiment_Analysis.csv", 40000)
+# splitData("sentiment140.csv", 1600000)
