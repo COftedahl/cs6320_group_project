@@ -1,7 +1,6 @@
 import constants
 import re
-import pandas as pd
-
+import math
 
 def combinedPrintLine(text, sentementVal, file):
     outFile = open(constants.CLEANED_DATA_PATH + file, "a")
@@ -29,6 +28,7 @@ def parseSentiment_Analysis():
         newline = line.replace("\n", "")
         splitArr = newline.split(',')
         cleanedLine = splitArr[3].replace("\"", "")
+        cleanedLine = cleanedLine.lower()
         cleanedLine = cleanLine(cleanedLine)
 
         sentiment = 0
@@ -46,31 +46,6 @@ def parseSentiment_Analysis():
 
         combinedPrintLine(cleanedLine, sentiment, "Sentiment_Analysis.csv")
 
-        
-
-def parseTrain():
-    infile = open(constants.RAW_DATA_PATH + "train.csv")
-    i = 0
-    for line in infile:
-        if i == 0:
-            i += 1
-            continue
-        # removing the newline at the end of the line
-        newline = line.replace("\n", "")
-        splitArr = newline.split(",")
-        cleanedLine = splitArr[1].replace("\"", "")
-        cleanedLine = cleanLine(cleanedLine)
-        
-        sentiment = 0
-        match splitArr[-7]:
-            case "neutral":
-                sentiment = 0
-            case "positive":
-                sentiment = 1
-            case "negative":
-                sentiment = -1
-        print(cleanedLine)
-        combinedPrintLine(cleanedLine, sentiment, "train.csv")
 
 def parseSentiment140():
     infile = open(constants.RAW_DATA_PATH + "training.1600000.processed.noemoticon.csv")
@@ -78,6 +53,7 @@ def parseSentiment140():
         newline = line.replace("\n", "")
         splitArr = newline.split(",")
         cleanedLine = splitArr[5].replace("\"", "")
+        cleanedLine = cleanedLine.lower()
         cleanedLine = cleanLine(cleanedLine)
         sentiment = 0
         match splitArr[0]:
@@ -100,6 +76,7 @@ def parseTweets():
         newline = line.replace("\n", "")
         splitArr = newline.split(",")
         cleanedLine = splitArr[1].replace("\"", "")
+        cleanedLine = cleanedLine.lower()
         cleanedLine = cleanLine(cleanedLine)
         sentiment = 0
         match splitArr[-1]:
@@ -113,11 +90,40 @@ def parseTweets():
         combinedPrintLine(cleanedLine, sentiment, "Tweets.csv")
 
 
+def splitData(file, lines):
+    inFile = open(constants.CLEANED_DATA_PATH + file, "r")
+    testFile = open(constants.FINAL_DATA_PATH + "test.csv", "a")
+    valFile = open(constants.FINAL_DATA_PATH + "val.csv", "a")
+    trainFile = open(constants.FINAL_DATA_PATH + "train.csv", "a")
 
+    testAndValLines = math.floor(lines * .1)
+    trainLines = lines - (testAndValLines * 2)
 
+    i = 0
+    while i != testAndValLines:
+        testLine = inFile.readline()
+        valLine = inFile.readline()
+
+        testFile.write(testLine)
+        valFile.write(valLine)
+
+        i += 1
+
+    i = 0
+    while i != trainLines:
+        trainLine = inFile.readline()
+
+        trainFile.write(trainLine)
+
+        i += 1
+    return
 
 
 # parseTweets()
 # parseSentiment140()
 # parseTrain()
 # parseSentiment_Analysis()
+
+splitData("Tweets.csv", 47480)
+splitData("Sentiment_Analysis.csv", 40000)
+splitData("sentiment140.csv", 1600000)
