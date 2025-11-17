@@ -7,7 +7,7 @@ TRAINING_DATA_PATH = CLEANED_DATA_PATH + "Sentiment_Analysis.csv"
 VAL_DATA_PATH = ""
 USER_AT_TOKEN = "<atToken>"
 TEXT_COLUMN_NAME = "text"
-VALUE_COLUMN_NAME = "values"
+VALUE_COLUMN_NAME = "label"
 
 class MODEL_OPTIONS(Enum):
   BERT_MULTILINGUAL = "nlptown/bert-base-multilingual-uncased-sentiment" # "https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment"

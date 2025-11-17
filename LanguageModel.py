@@ -1,5 +1,7 @@
-from constants import TEXT_COLUMN_NAME, VALUE_COLUMN_NAME
+from constants import TEXT_COLUMN_NAME
 from transformers import pipeline, infer_device, AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments, DataCollatorWithPadding
+import evaluate
+import numpy as np
 
 # Reference: https://huggingface.co/docs/transformers/quicktour
 
@@ -14,30 +16,38 @@ class LanguageModel():
     self.collocator = DataCollatorWithPadding(tokenizer=self.tokenizer)
 
   def train(self, trainData, testData, trainingArgs = TrainingArguments(
-      output_dir="Data",
-      learning_rate=2e-5,
-      per_device_train_batch_size=8,
-      per_device_eval_batch_size=8,
-      num_train_epochs=2,
-      push_to_hub=False,
+    output_dir="Data",
+    eval_strategy="epoch",
+    push_to_hub=False,
   )): 
     
-    def tokenizeTrainDataset(dataset):
-      return self.tokenizer(dataset[TEXT_COLUMN_NAME])
-    def tokenizeTestDataset(dataset):
-      return self.tokenizer(dataset[VALUE_COLUMN_NAME])
-    tokenizedTrainData = trainData.map(tokenizeTrainDataset, batched=True)
-    tokenizedTestData = testData.map(tokenizeTestDataset, batched=True)
+    def tokenizeDataset(dataset):
+      return self.tokenizer(dataset[TEXT_COLUMN_NAME], padding="max_length", truncation=True)
+    tokenizedTrainData = trainData.map(tokenizeDataset, batched=True)
+    tokenizedTestData = testData.map(tokenizeDataset, batched=True)
+    print("Train:", tokenizedTrainData)
+    print("Test: ", tokenizedTestData)
+    
+    # metric = evaluate.load("accuracy")
+    metric = evaluate.load("confusion_matrix")
+
+    def compute_metrics(eval_pred):
+      logits, labels = eval_pred
+      # convert the logits to their predicted class
+      predictions = np.argmax(logits, axis=-1)
+      return metric.compute(predictions=predictions, references=labels)
 
     trainer = Trainer(
       model=self.model,
       args=trainingArgs,
       train_dataset=tokenizedTrainData,
-      eval_dataset=tokenizedTestData,
-      tokenizer=self.tokenizer,
-      data_collator=self.collocator,
+      eval_dataset=tokenizedTrainData,
+      compute_metrics=compute_metrics,
     )
+    print("trainer train_dataset:")
+    print(trainer.train_dataset)
+    print(trainer.train_dataset[0])
     trainer.train()
 
   def test(self, data): 
-    return self.pipeline(data)
+    return self.pipe(data)

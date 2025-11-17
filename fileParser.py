@@ -7,7 +7,7 @@ class FileParser:
   # function to parse a file and return its data
   # @param path: string indicating the path to the file to parse
   # @return: array of the data entries found in the file
-  def parseFile(self, path): 
+  def parseFile(self, path, constantAdded = 0): 
     # lines = [] # entries of format {"text": text, "label": sentimentValue}
     datasetDict = {TEXT_COLUMN_NAME: [], VALUE_COLUMN_NAME: []}
     try: 
@@ -16,7 +16,7 @@ class FileParser:
           indexOfEndOfText = x.rfind(",")
           # lines.append({"text": x[0: indexOfEndOfText], "label": x.replace("\n","")[indexOfEndOfText + 1:]})
           datasetDict[TEXT_COLUMN_NAME].append(x[0: indexOfEndOfText])
-          datasetDict[VALUE_COLUMN_NAME].append(x.replace("\n","")[indexOfEndOfText + 1:])
+          datasetDict[VALUE_COLUMN_NAME].append(int(x.replace("\n","")[indexOfEndOfText + 1:]) + constantAdded)
         file.close()
     except FileNotFoundError:
       raise FileNotFoundError(f"File not found: {path}")
