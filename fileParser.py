@@ -6,6 +6,7 @@ class FileParser:
 
   # function to parse a file and return its data
   # @param path: string indicating the path to the file to parse
+  # @param constantAdded: integer value to add to all sentiment values parsed from the file - used because certain loss functions do not allow negative values
   # @return: array of the data entries found in the file
   def parseFile(self, path, constantAdded = 0): 
     # lines = [] # entries of format {"text": text, "label": sentimentValue}
