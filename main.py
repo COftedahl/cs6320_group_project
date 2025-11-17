@@ -10,5 +10,5 @@ if __name__ == '__main__':
   # print(reducedTrainingData)
   trainingDataSet = Dataset.from_dict(trainingData)
   print(trainingDataSet)
-  lm = LanguageModel(MODEL_OPTIONS.BERT_MULTILINGUAL.value)
+  lm = LanguageModel(MODEL_OPTIONS.SENTIMENT_ANALYSIS_BERT.value)
   lm.train(trainingDataSet, trainingDataSet)
