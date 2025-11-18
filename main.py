@@ -13,3 +13,6 @@ if __name__ == '__main__':
   # print(trainingDataSet)
   languageModel = LanguageModel(MODEL_OPTIONS.SENTIMENT_ANALYSIS_BERT.value)
   languageModel.train(trainingDataSet, trainingDataSet)
+  print(languageModel.test("This movie was bad"))
+  print(languageModel.test("This movie was good"))
+  print(languageModel.test("This movie was good, but I wouldn't care to see it again"))
