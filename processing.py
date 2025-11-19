@@ -17,6 +17,7 @@ def cleanLine(line):
     nohttpURL = re.sub(url_pattern, '', nohttpsURL)
     return nohttpURL
 
+#Used to parse its respective file
 def parseSentiment_Analysis():
     infile = open(constants.RAW_DATA_PATH + "Sentiment_Analysis.csv")
     i = 0
@@ -46,7 +47,7 @@ def parseSentiment_Analysis():
 
         combinedPrintLine(cleanedLine, sentiment, "Sentiment_Analysis.csv")
 
-
+#Used to parse its respective file
 def parseSentiment140():
     infile = open(constants.RAW_DATA_PATH + "training.1600000.processed.noemoticon.csv")
     for line in infile:
@@ -65,7 +66,7 @@ def parseSentiment140():
                 sentiment = -1
         print(cleanedLine)
         combinedPrintLine(cleanedLine, sentiment, "sentiment140.csv")
-
+#Used to parse its respective file
 def parseTweets():
     infile = open(constants.RAW_DATA_PATH + "Tweets.csv")
     i = 0
@@ -89,7 +90,30 @@ def parseTweets():
         print(cleanedLine)
         combinedPrintLine(cleanedLine, sentiment, "Tweets.csv")
 
+#Used to parse its respective file
+def parseSmile():
+    infile = open(constants.RAW_DATA_PATH + "smile.csv")
+    
+    for line in infile:
+        newline = line.replace("\n", "")
+        splitArr = newline.split(",")
+        cleanedLine = splitArr[0].replace("\"", "")
+        cleanedLine = cleanedLine.lower()
+        cleanedLine = cleanLine(cleanedLine)
+        sentiment = 0
+        match splitArr[-1]:
+            case 0:
+                sentiment = 0
+            case 1:
+                sentiment = 1
+            case -1:
+                sentiment = -1
+        print(cleanedLine)
+        combinedPrintLine(cleanedLine, sentiment, "smile.csv")
 
+
+
+#used to take in a file and split it into 80/10/10 train/test/validation files
 def splitData(file, lines):
     inFile = open(constants.CLEANED_DATA_PATH + file, "r")
     testFile = open(constants.FINAL_DATA_PATH + "test.csv", "a")
@@ -126,7 +150,8 @@ def splitData(file, lines):
 # parseSentiment140()
 # parseTrain()
 # parseSentiment_Analysis()
+parseSmile()
 
-splitData("Tweets.csv", 47480)
-splitData("Sentiment_Analysis.csv", 40000)
-splitData("sentiment140.csv", 1600000)
+# splitData("Tweets.csv", 47480)
+# splitData("Sentiment_Analysis.csv", 40000)
+# splitData("sentiment140.csv", 1600000)
