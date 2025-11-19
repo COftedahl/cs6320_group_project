@@ -93,8 +93,11 @@ def parseTweets():
 def splitData(file, lines):
     inFile = open(constants.CLEANED_DATA_PATH + file, "r")
     testFile = open(constants.FINAL_DATA_PATH + "test.csv", "a")
+    # testFile = open(constants.FINAL_DATA_PATH + "test.csv", "x")
     valFile = open(constants.FINAL_DATA_PATH + "val.csv", "a")
+    # valFile = open(constants.FINAL_DATA_PATH + "val.csv", "x")
     trainFile = open(constants.FINAL_DATA_PATH + "train.csv", "a")
+    # trainFile = open(constants.FINAL_DATA_PATH + "train.csv", "x")
 
     testAndValLines = math.floor(lines * .1)
     trainLines = lines - (testAndValLines * 2)
@@ -124,6 +127,6 @@ def splitData(file, lines):
 # parseTrain()
 # parseSentiment_Analysis()
 
-# splitData("Tweets.csv", 47480)
-# splitData("Sentiment_Analysis.csv", 40000)
-# splitData("sentiment140.csv", 1600000)
+splitData("Tweets.csv", 47480)
+splitData("Sentiment_Analysis.csv", 40000)
+splitData("sentiment140.csv", 1600000)
