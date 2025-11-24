@@ -1,0 +1,19 @@
+{
+  "models": [
+    {
+      "name": "BERT_Multilingual",
+      "accuracy": 0.7232,
+      "f1": 0.7251836683825893
+    },
+    {
+      "name": "Sentiment_BERT",
+      "accuracy": 0.7712,
+      "f1": 0.7736748342519406
+    },
+    {
+      "name": "Twitter_RoBERTa",
+      "accuracy": 0.7568,
+      "f1": 0.7603865988913115
+    }
+  ]
+}

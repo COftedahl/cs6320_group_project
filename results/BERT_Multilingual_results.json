@@ -1,0 +1,62 @@
+{
+  "model_name": "BERT_Multilingual",
+  "model_source": "nlptown/bert-base-multilingual-uncased-sentiment",
+  "num_epochs": 3,
+  "train_samples": 5000,
+  "test_samples": 625,
+  "val_samples": 625,
+  "training_loss": 0.6327951754243991,
+  "test_accuracy": 0.7232,
+  "test_loss": 0.6947637796401978,
+  "classification_report": {
+    "Negative": {
+      "precision": 0.7701863354037267,
+      "recall": 0.6702702702702703,
+      "f1-score": 0.7167630057803468,
+      "support": 185.0
+    },
+    "Neutral": {
+      "precision": 0.6286644951140065,
+      "recall": 0.8177966101694916,
+      "f1-score": 0.7108655616942909,
+      "support": 236.0
+    },
+    "Positive": {
+      "precision": 0.8598726114649682,
+      "recall": 0.6617647058823529,
+      "f1-score": 0.7479224376731302,
+      "support": 204.0
+    },
+    "accuracy": 0.7232,
+    "macro avg": {
+      "precision": 0.7529078139942338,
+      "recall": 0.7166105287740382,
+      "f1-score": 0.7251836683825893,
+      "support": 625.0
+    },
+    "weighted avg": {
+      "precision": 0.7460212890167176,
+      "recall": 0.7232,
+      "f1-score": 0.7247065694632565,
+      "support": 625.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      124,
+      54,
+      7
+    ],
+    [
+      28,
+      193,
+      15
+    ],
+    [
+      9,
+      60,
+      135
+    ]
+  ],
+  "timestamp": "2025-11-24 15:18:48.448592"
+}

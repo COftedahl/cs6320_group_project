@@ -1,0 +1,62 @@
+{
+  "model_name": "Sentiment_BERT",
+  "model_source": "MarieAngeA13/Sentiment-Analysis-BERT",
+  "num_epochs": 3,
+  "train_samples": 5000,
+  "test_samples": 625,
+  "val_samples": 625,
+  "training_loss": 0.4439273962197593,
+  "test_accuracy": 0.7712,
+  "test_loss": 0.5757730007171631,
+  "classification_report": {
+    "Negative": {
+      "precision": 0.8698630136986302,
+      "recall": 0.6864864864864865,
+      "f1-score": 0.7673716012084593,
+      "support": 185.0
+    },
+    "Neutral": {
+      "precision": 0.6745762711864407,
+      "recall": 0.8432203389830508,
+      "f1-score": 0.7495291902071564,
+      "support": 236.0
+    },
+    "Positive": {
+      "precision": 0.8478260869565217,
+      "recall": 0.7647058823529411,
+      "f1-score": 0.8041237113402062,
+      "support": 204.0
+    },
+    "accuracy": 0.7712,
+    "macro avg": {
+      "precision": 0.7974217906138641,
+      "recall": 0.7648042359408261,
+      "f1-score": 0.7736748342519406,
+      "support": 625.0
+    },
+    "weighted avg": {
+      "precision": 0.7889298868374033,
+      "recall": 0.7712,
+      "f1-score": 0.7726301955613695,
+      "support": 625.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      127,
+      54,
+      4
+    ],
+    [
+      13,
+      199,
+      24
+    ],
+    [
+      6,
+      42,
+      156
+    ]
+  ],
+  "timestamp": "2025-11-24 16:26:44.326713"
+}
