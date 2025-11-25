@@ -42,6 +42,16 @@ def computeMetrics(predictions, trainingData):
   f1 = (2 * precision * recall) / (precision + recall)
   return {"number of predictions: ": numTests, "recall": recall, "accuracy": accuracy, "precision": precision, "f1": f1}
 
+def saveToFile(path, content): 
+  try: 
+    with open (path, 'x') as file: 
+      file.write(content)
+  except FileExistsError: 
+    with open (path, 'w') as file: 
+      file.write(content)
+  except Exception as e:
+    print(e)
+
 if __name__ == '__main__':
   fileParser = FileParser()
   trainingData = fileParser.parseFile(TRAINING_DATA_PATH, constantAdded=1)
@@ -56,4 +66,6 @@ if __name__ == '__main__':
     # print("{:-<65} Result: {}, Compund Score: {}".format(sentence, str(SENTIMENT_RESULT_ARR[label.value]), str(vs['compound'])))
     predictions.append(label)
   print("Generating metrics...")
-  print(computeMetrics(predictions, trainingData))
+  metrics = computeMetrics(predictions, trainingData)
+  print(metrics)
+  saveToFile("./results/vader.txt", str(metrics))
