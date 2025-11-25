@@ -19,6 +19,7 @@ class LanguageModel():
     output_dir="Data",
     eval_strategy="epoch",
     push_to_hub=False,
+    save_strategy="no",
   )): 
     
     def tokenizeDataset(dataset):
