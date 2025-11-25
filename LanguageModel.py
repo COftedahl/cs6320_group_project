@@ -1,18 +1,25 @@
 from constants import TEXT_COLUMN_NAME
-from transformers import pipeline, infer_device, AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments, DataCollatorWithPadding
+from transformers import pipeline, AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments, DataCollatorWithPadding
 import evaluate
 import numpy as np
-
+import torch
 # Reference: https://huggingface.co/docs/transformers/quicktour
 
 class LanguageModel(): 
 
   def __init__(self, modelSource): 
     self.modelSource = modelSource
-    self.device = infer_device()
-    self.pipe = pipeline("text-classification", model=modelSource, device=self.device)
+    self.device = 0 if torch.cuda.is_available() else -1
+
     self.model = AutoModelForSequenceClassification.from_pretrained(modelSource)
     self.tokenizer = AutoTokenizer.from_pretrained(modelSource)
+
+    if self.tokenizer.pad_token is None and hasattr(self.tokenizer, "eos_token"):
+      self.tokenizer.pad_token = self.tokenizer.eos_token
+      self.model.config.pad_token_id = self.model.config.eof_token_id
+
+    self.pipe = pipeline("text-classification", model=modelSource, tokenizer = self.tokenizer, device=self.device)
+    
     self.collocator = DataCollatorWithPadding(tokenizer=self.tokenizer)
 
   def train(self, trainData, testData, trainingArgs = TrainingArguments(

@@ -1,6 +1,6 @@
 from enum import Enum
 
-RAW_DATA_PATH = "./Data/raw/"
+RAW_DATA_PATH = "./Data/clean/"
 CLEANED_DATA_PATH = "./Data/clean/"
 FINAL_DATA_PATH = "./Data/final/"
 # TRAINING_DATA_PATH = CLEANED_DATA_PATH + "Sentiment_Analysis.csv"
@@ -14,6 +14,8 @@ class MODEL_OPTIONS(Enum):
   BERT_MULTILINGUAL = "nlptown/bert-base-multilingual-uncased-sentiment" # "https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment"
   SENTIMENT_ANALYSIS_BERT = "MarieAngeA13/Sentiment-Analysis-BERT" # "https://huggingface.co/MarieAngeA13/Sentiment-Analysis-BERT"
   TWITTER_SENTIMENT_ANALYSIS_BERT = "cardiffnlp/twitter-roberta-base-sentiment-latest" # "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest"
+  LLAMA_SENTIMENT = "TinyLlama/TinyLlama-1.1B-Chat-v1.0" # Supports 3-class sentiment, and is small/light, perfect for training and inference
+
 
 
 

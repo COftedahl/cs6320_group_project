@@ -12,7 +12,7 @@ class FileParser:
     # lines = [] # entries of format {"text": text, "label": sentimentValue}
     datasetDict = {TEXT_COLUMN_NAME: [], VALUE_COLUMN_NAME: []}
     try: 
-      with open(path) as file:
+      with open(path, encoding="utf-8", errors="replace") as file:
         for x in file:
           indexOfEndOfText = x.rfind(",")
           # lines.append({"text": x[0: indexOfEndOfText], "label": x.replace("\n","")[indexOfEndOfText + 1:]})
