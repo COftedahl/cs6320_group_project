@@ -1,0 +1,326 @@
+\documentclass[twocolumn]{article}
+% \documentclass[a4paper]{article}
+\usepackage{color}
+\usepackage[top=1in,bottom=1in,left=1.2in,right=1.2in]{geometry}
+\usepackage{hyperref}
+\usepackage[small]{titlesec}
+
+\usepackage{amsmath}
+
+\usepackage[]{minted}
+\newenvironment{code}{\captionsetup{type=listing}}
+
+\newcommand{\todo}[1]{\textcolor{blue}{\textbf{TODO:} #1}}
+\newcommand{\red}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\title{CS6320: Final Project Report \\ \begin{small}\url{https://github.com/COftedahl/cs6320_group_project}\end{small}}
+\author{Brendan Martel \\ BXM240013
+    \and Cole Oftedahl \\ CXO220001
+    \and Bradley Evan Stover \\ BES170230
+    \and Zhaotong Zhang \\ ZXZ220016}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+
+
+\section{Introduction (10pt)}
+
+\todo{The ﬁrst paragraph should brieﬂy describe task and data.}
+\todo{The second paragraph should brieﬂy describe your approach. Try to motivate it.}
+\todo{The third paragraph should describe your main experiments and results, including mentioning the data you use.}
+Sentiment analysis aspires to determine the emotional polarity expressed in natural language and is typically categorized into three classes: positive, negative, and neutral. Although this task has continuously been widely explored, social media platforms, especially Twitter, bring up unique challenges. The language in social media is very informal, with creative spelling and punctuation, misspellings, slang, new words, URLs, and genre-specific terminology and abbreviations, e.g., RT for re-tweet and \#hashtags1[1].  In order to train and evaluate our project, we combine several publicly available tweet datasets, including Sentiment140, the Mass Twitter dataset, the Chirps dataset, and additional cleaned tweet corpora spanning multiple years and topics. Gathering these datasets can yield an extensive, heterogeneous collection suitable for both small- and large-scale experiments.
+
+With the growing availability of large-scale Tweet datasets spanning several years and different topics, it has evolved increasingly critical to develop sentiment classification systems. These systems not only perform well on small, accurate datasets but also scale to enormous, heterogeneous corpora. Modern transformer-based language models, such as BERT and RoBERTa, have demonstrated powerful performance in many NLP tasks due to their contextual understanding. Classical lexicon-based tools, such as VADER, stay widely used for real-time or resource-constrained sentiment inference. In recent years, large-language models (LLMs), such as LLaMA, have made it feasible to fine-tune powerful generative architectures on domain-specific tasks, enabling improvements when working with massive datasets.
+
+We run many experiments across datasets of different sizes to analyze how model performance changes with increasing dataset size. Using the combined Tweet datasets from several sources, we train and evaluate several models on consistent train, validation, and test splits. Our results show that transformer models outperform classical baselines, with RoBERTa gaining the strongest performance on medium-sized datasets. When scaling to the largest combined dataset, the LLaMA-based model gains the highest accuracy. Also, it demonstrates its advantage in capturing subtle sentiment features in large, diverse Tweet corpora. These findings emphasize the importance of both dataset scale and model capacity in Twitter sentiment classification. 
+
+
+% \section{Task (5pt)}
+% \todo{Define the task. -- Specify the inputs and outputs. This includes your notation. Section 2 of this paper~\cite{du-etal-2021-qa} may give you an idea.}
+
+
+\section{Data (5pt)}
+
+\todo{Describe the data you use, including how many examples are in the training, development, and test sets.}
+In this project, we form a sentiment classification system using a massive combined Twitter corpus derived from multiple public datasets. We parsed and normalized data from Sentiment140, the Mass Twitter dataset, and the Chirps dataset. And additional labeled Tweet collections. After parsing and normalizing the datasets, we gather and unify all entries into a consistent three-class sentiment format, including positive, neutral, and negative. Then, we apply our preprocessing pipeline, which cleans noise, removes URLs, and standardizes tokens. In the meantime, we split the resulting corpus into three equal partitions. The final training set contains 168,747 tweets, and both the development set and test set have 168,747 tweets each. These amounts ensure balanced experimentation across all models. These split methods allow us to ensure balanced and consistent evaluation across all models used in the study.
+\begin{table}[h!]
+\centering
+\begin{tabular}{lccc}
+\hline
+\textbf{Dataset Split} & \textbf{Number of Examples} \\
+\hline
+Training Set     &  \texttt{168,747} \\
+Development Set  &  \texttt{168,747} \\
+Test Set         &  \texttt{168,747} \\
+\hline
+\end{tabular}
+\caption{Number of examples in the training, development, and test sets.}
+\label{tab:dataset_splits}
+\end{table}
+
+
+\section{Methodology (20pt)}
+
+\red{If your project is proposing a new model/method.}
+
+\todo{Describe your model. If you use a neural network, you should define the architecture. There's no need to write equations of common units (e.g., LSTM), so you can just use functions to refer to using such units. If you use linear models with features, provide details.}
+% 
+% Briefly describe what learning algorithm you are using. Specify your learning objective;
+% 
+% Briefly Describe your inference procedure. This is the process you use to make predictions during testing.}
+
+\red{If your project is more analysis-based and propose how to analyze model behaviors/outputs}
+
+\todo{Section 4 of \cite{das-etal-2022-automatic} is an example. If you do manual inspections, please provide the details such as analysis/annotation guidelines.}
+In this section, we explain the data preparation pipeline, model training procedures, evaluation setup, and the manual analysis framework used to study and analyze model behaviors.  Our methodology follows the general structure of Section 4 in Das et al. (2022), which focuses on automated metrics and on qualitative inspection and error categorization to better understand and learn from the model outputs.
+
+\subsection{Data Sources and Integration}
+
+To create a general-purpose sentiment classification corpus, we aggregated four publicly available tweet-based datasets:
+
+\begin{itemize} \small
+    \item \textbf{Sentiment\_Analysis.csv}: A collection of labeled English posts annotated for positive, negative, or neutral sentiment.
+    \item \textbf{Sentiment140.csv}: A large-scale Twitter dataset containing polarity-annotated tweets collected across multiple years.
+    \item \textbf{Tweets.csv}: A mixed-source Twitter dataset containing short informal posts covering diverse subjects.
+    \item \textbf{Smile.csv}: A sentiment dataset with three normalized labels (positive, neutral, negative).
+\end{itemize}
+
+Even though these datasets originate from different time periods and subject domains, their sentiment labels were standardized to a unified three-class scheme:
+
+{\small
+\begin{itemize}
+    \item \textbf{Positive} -- 2
+    \item \textbf{Neutral} -- 1
+    \item \textbf{Negative} -- 0
+\end{itemize}
+}
+
+
+This merging procedure allows us to form a wide, diverse, and domain-irrelevant sentiment corpus suitable for evaluating the robustness of modern language models.
+
+\subsection{Data Preprocessing and Normalization}
+\label{sec:preprocessing}
+
+Before building the final train, validation, and test splits, all raw data files underwent a unified preprocessing stage:
+{\small
+\begin{itemize}
+    \item \textbf{URL, hashtag, and username removal:}  
+    Links such as \texttt{http://...} and user handles like \texttt{@name} are stripped using the \texttt{cleanLine} function.
+
+    \item \textbf{Consistent text formatting:}  
+    All text is converted to lowercase and cleaned from excessive whitespace or punctuation.
+
+    \item \textbf{Character filtering:}  
+    Non-English characters and redundant punctuation marks are removed or collapsed.
+
+    \item \textbf{Label normalization:}  
+    Dataset-specific labels (e.g., $-1$, $0$, $1$) are normalized to the range $0$--$2$ through a constant shift.
+\end{itemize}
+}
+
+After preprocessing, each dataset is written in the format:
+\[
+\{ \text{sentence}, \text{label} \}.
+\]
+
+The \texttt{splitData()} routine is then executed to construct the final splits:
+{\small
+\begin{itemize}
+    \item \textbf{80\% Training set:} \texttt{train.csv}
+    \item \textbf{10\% Validation set:} \texttt{val.csv}
+    \item \textbf{10\% Test set:} \texttt{test.csv}
+\end{itemize}
+}
+
+This split guarantees that all models are trained and evaluated on the same unified distribution.
+
+% ---------------------------------------------------------
+
+\subsection{Model Architecture and Training Procedure}
+\label{sec:models}
+
+The project primarily experiments with transformer-based architectures due to their state-of-the-art performance in text classification. The implemented and planned models include:
+{\small
+\begin{itemize}
+    \item \textbf{RoBERTa Twitter:}
+    \texttt{cardiffnlp/\allowbreak twitter-roberta-base-sentiment-latest}
+
+    \item \textbf{BERT-based sentiment models} from HuggingFace
+
+    \item \textbf{(Planned)} LLaMA-based fine-tuning for comparison
+
+    \item \textbf{(Planned)} VADER as a lexicon-based baseline
+\end{itemize}
+}
+
+\subsubsection*{Training Pipeline}
+
+All transformer models are fine-tuned using HuggingFace’s \texttt{Trainer} with the following defaults:
+{\small
+\begin{itemize}
+    \item \textbf{Loss:} Cross-entropy
+    \item \textbf{Optimizer:} AdamW
+    \item \textbf{Batch size:} 8
+    \item \textbf{Epochs:} 2--3
+    \item \textbf{Evaluation metric:} Confusion matrix using \texttt{evaluate.load("confusion\_matrix")}
+    \item \textbf{Tokenization:} \texttt{AutoTokenizer} with truncation to 256 tokens
+\end{itemize}
+}
+
+The same train/validation/test splits are used for all models to ensure a fair comparison across different architectures.
+
+
+
+\section{Implementations (15pt)}
+
+\todo{Explain your implementation for the project (e.g. which commands/algorithms/data structures you used). What existing packages are used?
+When describing your implementation details (e.g. decoding), we suggest that you include corresponding but only \textbf{important} code pieces (e.g. classes, data structures, algorithms. It may be in the form of a screenshot or latex source code like in Listing~\ref{lst:eg}).
+}
+
+\begin{listing}[ht]
+\begin{minted}[frame=single,framesep=10pt]{python}
+  import numpy  
+  print("this is a piece of code")
+\end{minted}
+\caption{Example of a Code Piece.}
+\label{lst:eg}
+\end{listing}
+
+\section{Experiments and Results (45pt)}
+
+\red{If your project is proposing a new model/method.}
+\paragraph{Development and Test Results}
+\todo{Briefly explain here how you evaluated the models and metrics used. 
+Put the results into clear tables or diagrams and include your observations and analysis.}
+
+\paragraph{Error Analysis}
+\todo{Qualitative analysis of selected failure examples. Show and discuss error examples from your development set. Identify certain classes of errors and use the examples to illustrate them. 
+Please analyze with respect to unknown words as well.
+}
+
+\paragraph{(Bonus +2pt) Speed Analysis}
+\todo{Speed analysis and computation needs are a major issue of the task. Makes sure to report the costs of inference per example.}
+
+\red{If your project is more analysis-based and propose how to analyze model behaviors/outputs}
+
+\todo{Please refer to Section 7 Experimental Results and Analysis in this paper, \url{https://aclanthology.org/2022.acl-long.274.pdf}. Basicly, you provide comprehensive analysis of model outputs, error cases, comparisons between model outputs and insights/obersations that can be derived.}
+
+\subsection{Overall Model Performance}
+
+Table~\ref{tab:overall_performance} summarizes the accuracy, macro-averaged
+precision, recall, and F1 scores for all systems.  
+The numerical values are imported from \texttt{table.tex}.
+
+\begin{table}[h!]
+\raggedleft
+\caption{Model Performance on Test Set}
+\label{tab:overall_performance}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Model} & \textbf{Acc.} & \textbf{Prec.} & \textbf{Rec.} & \textbf{F1} \\
+\hline
+BERT Multilingual & 0.7232 & 0.7529 & 0.7166 & 0.7252 \\
+Sentiment-BERT & 0.7712 & 0.7974 & 0.7648 & 0.7737 \\
+Twitter-RoBERTa & 0.7568 & 0.7728 & 0.7540 & 0.7604 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+Sentiment-BERT achieves the best overall results with 77.12\% accuracy and 0.7737
+macro F1, outperforming both BERT Multilingual and Twitter-RoBERTa.
+This aligns with expectations: Sentiment-BERT is explicitly trained for sentiment
+classification, whereas BERT Multilingual supports broader multilingual tasks,
+and Twitter-RoBERTa is optimized for tweet semantics but not solely sentiment.
+
+\subsection{Class-Level Performance}
+
+Across all models, the Neutral class consistently shows the
+highest recall but the lowest precision, reflecting dataset ambiguity and the
+overlap among mild positive, mild negative, and neutral tweets.
+
+\paragraph{BERT Multilingual}
+{\small
+\begin{itemize}
+    \item Positive precision: 0.8599 (strongest)
+    \item Negative recall: 0.6703 (weakest)
+    \item Frequently mislabels mild sentiment as Neutral
+    \item Confusion matrix reveals strong spillover from Positive $\rightarrow$ Neutral (60 instances)
+\end{itemize}
+}
+
+\paragraph{Sentiment-BERT}
+{\small
+\begin{itemize}
+    \item Highest precision, recall, and F1 across all classes
+    \item Strong Neutral detection (Recall = 0.8432)
+    \item Robust separation between Positive and Negative classes
+    \item Lowest overall misclassification rate
+\end{itemize}
+}
+
+\paragraph{Twitter-RoBERTa}
+{\small
+\begin{itemize}
+    \item Strong Positive precision: 0.84
+    \item Strong Negative precision: 0.80
+    \item More balanced than BERT Multilingual
+    \item Slightly weaker Neutral recall compared to Sentiment-BERT
+    \item Tends to confuse borderline Negative/Neutral cases
+\end{itemize}
+}
+
+These trends imply that pretraining domain specificity—sentiment-focused,
+general-purpose, or Twitter-based—has a measurable effect on sentiment
+classification behaviour.
+
+\subsection{Confusion Matrix Analysis and Error Patterns}
+
+\paragraph{BERT Multilingual}
+The confusion matrix reveals systematic over-prediction of the Neutral class:
+{\small
+\begin{itemize}
+    \item 54 cases of Negative $\rightarrow$ Neutral
+    \item 60 cases of Positive $\rightarrow$ Neutral
+    \item Only 7 cases of Neutral $\rightarrow$ Positive
+\end{itemize}
+}
+
+This suggests a conservative decision boundary, likely due to multilingual
+pretraining that lacks Twitter-specific cues such as sarcasm, ellipsis, or
+informal intensifiers.
+
+\paragraph{Sentiment-BERT}
+{\small
+\begin{itemize}
+    \item Very low Positive $\rightarrow$ Negative confusion (6 cases)
+    \item Strong polarity identification overall
+    \item Occasional Negative $\rightarrow$ Neutral leakage (54 cases)
+\end{itemize}}
+Compared to BERT Multilingual, this model maintains a more balanced treatment of
+all three sentiment labels.
+
+\paragraph{Twitter-RoBERTa}
+{\small
+\begin{itemize}
+    \item 49 cases of Negative $\rightarrow$ Neutral
+    \item 26 cases of Neutral $\rightarrow$ Negative
+    \item Strong Positive classification (156 correct)
+    \item Struggles with sarcasm and subtle negativity despite Twitter-based pretraining
+\end{itemize}}
+This aligns with prior literature showing that social-media pretrained models
+capture lexical variation well but require sentiment-specific training for finer
+polarity distinctions.
+
+
+\section{Conclusion (5pt)}
+\todo{Brief conclusion summarizing findings (from both numerical results and qualitative analysis).}
+
+\bibliographystyle{plain}
+\bibliography{custom}
+[1] S. Rosenthal, P. Nakov, A. Ritter, and V. Stoyanov, “SemEval-2014 Task 9: Sentiment Analysis in Twitter,” 2014.
+
+\end{document}
