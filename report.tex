@@ -152,7 +152,7 @@ The project primarily experiments with transformer-based architectures due to th
 
     \item \textbf{(Planned)} LLaMA-based fine-tuning for comparison
 
-    \item \textbf{(Planned)} VADER as a lexicon-based baseline
+    \item \textbf{VADER:} a lexicon-based baseline
 \end{itemize}
 }
 
@@ -172,7 +172,7 @@ All transformer models are fine-tuned using HuggingFace’s \texttt{Trainer} wit
 
 The same train/validation/test splits are used for all models to ensure a fair comparison across different architectures.
 
-
+VADER, as a non-transformer, is used as a baseline against which to evaluate the transformer models. In this study, VADER is not trained, but is used to provide baseline classification scores by being run on the test dataset and evaluating its performance. 
 
 \section{Implementations (15pt)}
 
@@ -180,14 +180,129 @@ The same train/validation/test splits are used for all models to ensure a fair c
 When describing your implementation details (e.g. decoding), we suggest that you include corresponding but only \textbf{important} code pieces (e.g. classes, data structures, algorithms. It may be in the form of a screenshot or latex source code like in Listing~\ref{lst:eg}).
 }
 
-\begin{listing}[ht]
+The transformer models were implemented using the HuggingFace transformers library in python. Since multiple different models were evaluated, abstractions were used to allow simple reuse by passing a different parameter to indicate which model to use. 
+
+To this end, the LanguageModel class was developed, incorporating a constructor method as well as train and test methods. Development of this class was largely based on the documentation available from HuggingFace, and thus the class closely follows example code from the provided tutorials. 
+
+\begin{listing}[H]
 \begin{minted}[frame=single,framesep=10pt]{python}
-  import numpy  
-  print("this is a piece of code")
+  def test(self, data): 
+    return self.pipe(data)
 \end{minted}
-\caption{Example of a Code Piece.}
+\caption{LanguageModel test() method}
 \label{lst:eg}
 \end{listing}
+
+The constructor method simply accepts the model name as a parameter and then initializes variables to store the necessary model details used for training and testing. The test method is very simple, composed of only one line, listed above. The data parameter is the prompt being evaluated, and the simple interface provided by the transformers library allows calling pipe() with the data to compute the result using the loaded language model. 
+
+\begin{listing}[H]
+\begin{minted}[frame=single,framesep=10pt]{python}
+def train(self, trainData, 
+  trainingArgs
+): 
+  tokenizedTrainData = trainData.map(
+    tokenizeDataset, batched=True)
+  metric = evaluate.load(
+    "confusion_matrix")
+  trainer = Trainer(
+    model=self.model,
+    args=trainingArgs,
+    train_dataset=tokenizedTrainData,
+    eval_dataset=tokenizedTrainData,
+    compute_metrics=compute_metrics,
+  )
+  trainer.train()
+\end{minted}
+\caption{LanguageModel train() method}
+\label{lst:eg}
+\end{listing}
+
+The train method is more complex, requiring setup to utilize the provided Trainer interface from the transformers library. First, the method accepts the training dataset "trainData", and accepts "trainingArgs" to define parameters for the training. To implement the training, the Trainer class is used, which requires the training data to be tokenized and requires providing compute metrics, which allow the model to accurately compute the loss for each pass. 
+
+\begin{listing}[H]
+\begin{minted}[frame=single,framesep=10pt]{python}
+  def tokenizeDataset(dataset):
+    return self.tokenizer(
+      dataset[TEXT_COLUMN_NAME], 
+      padding="max_length", 
+      truncation=True
+    )
+  tokenizedTrainData = trainData.map(
+    tokenizeDataset, batched=True
+  )
+\end{minted}
+\caption{Tokenizing data in train() method}
+\label{lst:eg}
+\end{listing}
+
+The above listing details how the datasets are tokenized. This method is called to map "trainData" to "tokenizedTrainData", which ensures each input sent to the language model is of the proper size by using padding and truncation. 
+
+\begin{listing}[H]
+\begin{minted}[frame=single,framesep=10pt]{python}
+  metric = evaluate.load(
+    "confusion_matrix")
+
+  def compute_metrics(eval_pred):
+    logits, labels = eval_pred
+    # convert the logits to 
+    # their predicted class
+    predictions = np.argmax(logits, 
+      axis=-1)
+    return metric.compute(
+      predictions=predictions, 
+      references=labels
+    )
+\end{minted}
+\caption{Defining training metrics in train() method}
+\label{lst:eg}
+\end{listing}
+
+Finally, the metrics must be provided to the Trainer to allow it to update the weights of the model properly. Thus, the above lists the evaluation methods used for training. Using the confusion matrix approach, the predictions are checked against the reference labels to provide loss in the training loop. 
+
+The other portion of code written specifically for language processing tasks was the use of VADER. For this, the python package vaderSentiment was used, specifically utilizing the SentimentIntensityAnalyzer for computing a baseline sentiment prediction for the datasets. Much of this code is also based on the documentation for the vaderSentiment package. 
+
+\begin{listing}[H]
+\begin{minted}[frame=single,framesep=10pt]{python}
+analyzer = SentimentIntensityAnalyzer()
+predictions = []
+for sentence in tqdm(trainingData[
+    TEXT_COLUMN_NAME]):
+  vs = analyzer.polarity_scores(
+      sentence)
+  label = getOverallSentiment(vs)
+  predictions.append(label)
+metrics = computeMetrics(
+    predictions, trainingData)
+\end{minted}
+\caption{Main VADER Evaluation Loop}
+\label{lst:eg}
+\end{listing}
+
+VADER provides most functionality already, with each call of the "polarity\_scores" method returning the probability of the given input belonging to each of the three possible classifications, along with an aggregration of those probabilities in a field called "compound". Thus, the program simply calls this method on each input sentence to get the classification, storing the results in an array to later be passed to a helper method for computing metrics of the model. However, since the "polarity\_scores" method returns an object with multiple classification scores, the method "getOverallSentiment" was developed to classify the sentiment using the returned compound score. 
+
+\begin{listing}[H]
+\begin{minted}[frame=single,framesep=10pt]{python}
+THRESHOLD_VALUE = 0.5
+POSITIVE_THRESHOLD = THRESHOLD_VALUE
+NEGATIVE_THRESHOLD = -THRESHOLD_VALUE
+def getOverallSentiment(sentiment): 
+  if sentiment['compound'] >= 
+      POSITIVE_THRESHOLD:
+    return SENTIMENT_RESULT_ENUM.
+        POSITIVE
+  elif sentiment['compound'] <= 
+      NEGATIVE_THRESHOLD:
+    return SENTIMENT_RESULT_ENUM.
+        NEGATIVE
+  else:
+    return SENTIMENT_RESULT_ENUM.
+        NEUTRAL
+\end{minted}
+\caption{VADER Sentiment Classification}
+\label{lst:eg}
+\end{listing}
+
+The above listing details the thresholds used for classifications, which are based on the thresholds used in the documentation. Based on the compound score, a negative score below the threshold is classified as negative sentiment, a positive score above the threshold is positive sentiment, and any other score is neutral. 
 
 \section{Experiments and Results (45pt)}
 
@@ -225,13 +340,14 @@ The numerical values are imported from \texttt{table.tex}.
 BERT Multilingual & 0.7232 & 0.7529 & 0.7166 & 0.7252 \\
 Sentiment-BERT & 0.7712 & 0.7974 & 0.7648 & 0.7737 \\
 Twitter-RoBERTa & 0.7568 & 0.7728 & 0.7540 & 0.7604 \\
+VADER & 0.6646 & 0.0219 & 0.0710 & 0.0335 \\
 \hline
 \end{tabular}
 \end{table}
 
 
-Sentiment-BERT achieves the best overall results with 77.12\% accuracy and 0.7737
-macro F1, outperforming both BERT Multilingual and Twitter-RoBERTa.
+VADER performs the worst of all the models, which is expected as it does not follow the transformer architecture and because, owing to its purpose as a baseline, VADER is not trained on the Twitter data before testing, as the transformer models are. 
+Sentiment-BERT achieves the best overall results with 77.12\% accuracy and 0.7737 macro F1, outperforming both BERT Multilingual and Twitter-RoBERTa.
 This aligns with expectations: Sentiment-BERT is explicitly trained for sentiment
 classification, whereas BERT Multilingual supports broader multilingual tasks,
 and Twitter-RoBERTa is optimized for tweet semantics but not solely sentiment.
