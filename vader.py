@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 # https://www.geeksforgeeks.org/python/python-sentiment-analysis-using-vader/
 
-THRESHOLD_VALUE = 0.05
+THRESHOLD_VALUE = 0.5
 POSITIVE_THRESHOLD = THRESHOLD_VALUE
 NEGATIVE_THRESHOLD = -THRESHOLD_VALUE
 
