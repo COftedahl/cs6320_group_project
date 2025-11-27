@@ -171,7 +171,7 @@ All transformer models are fine-tuned using HuggingFace’s \texttt{Trainer} wit
 
 The same train/validation/test splits are used for all models to ensure a fair comparison across different architectures.
 
-VADER, as a non-transformer, is used as a baseline against which to evaluate the transformer models. In this study, VADER is not trained, but is used to provide baseline classification scores by being run on the test dataset and evaluating its performance. 
+VADER, as a non-transformer, is used as a baseline against which to evaluate the transformer models. In this study, VADER is not trained, but is used to provide baseline classification scores by being run on a concatenation of all the datasets and evaluating its performance. 
 
 \section{Implementations (15pt)}
 
@@ -328,8 +328,8 @@ Table~\ref{tab:overall_performance} summarizes the accuracy, macro-averaged
 precision, recall, and F1 scores for all systems.  
 The numerical values are imported from \texttt{table.tex}.
 
-\begin{table}[h!]
-\raggedleft
+\begin{table*}[t]
+\centering
 \caption{Model Performance on Test Set}
 \label{tab:overall_performance}
 \begin{tabular}{lcccc}
@@ -339,10 +339,10 @@ The numerical values are imported from \texttt{table.tex}.
 BERT Multilingual & 0.7232 & 0.7529 & 0.7166 & 0.7252 \\
 Sentiment-BERT & 0.7712 & 0.7974 & 0.7648 & 0.7737 \\
 Twitter-RoBERTa & 0.7568 & 0.7728 & 0.7540 & 0.7604 \\
-VADER & 0.6646 & 0.0219 & 0.0710 & 0.0335 \\
+VADER & 0.6746 & 0.0244 & 0.0596 & 0.0346 \\
 \hline
 \end{tabular}
-\end{table}
+\end{table*}
 
 
 VADER performs the worst of all the models, which is expected as it does not follow the transformer architecture and because, owing to its purpose as a baseline, VADER is not trained on the Twitter data before testing, as the transformer models are. 
