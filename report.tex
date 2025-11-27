@@ -214,8 +214,8 @@ Table~\ref{tab:overall_performance} summarizes the accuracy, macro-averaged
 precision, recall, and F1 scores for all systems.  
 The numerical values are imported from \texttt{table.tex}.
 
-\begin{table}[h!]
-\raggedleft
+\begin{table*}[t]
+\centering
 \caption{Model Performance on Test Set}
 \label{tab:overall_performance}
 \begin{tabular}{lcccc}
@@ -225,9 +225,10 @@ The numerical values are imported from \texttt{table.tex}.
 BERT Multilingual & 0.7232 & 0.7529 & 0.7166 & 0.7252 \\
 Sentiment-BERT & 0.7712 & 0.7974 & 0.7648 & 0.7737 \\
 Twitter-RoBERTa & 0.7568 & 0.7728 & 0.7540 & 0.7604 \\
+VADER & 0.6746 & 0.0244 & 0.0596 & 0.0346 \\
 \hline
 \end{tabular}
-\end{table}
+\end{table*}
 
 
 Sentiment-BERT achieves the best overall results with 77.12\% accuracy and 0.7737
