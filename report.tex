@@ -238,82 +238,134 @@ and Twitter-RoBERTa is optimized for tweet semantics but not solely sentiment.
 
 \subsection{Class-Level Performance}
 
-Across all models, the Neutral class consistently shows the
-highest recall but the lowest precision, reflecting dataset ambiguity and the
-overlap among mild positive, mild negative, and neutral tweets.
+Across every model, the Neutral class consistently obtains the highest recall but the lowest precision. It reflects the dataset’s inherent ambiguity and the linguistic overlap between mild positive, mild negative, and neutral tweets.
 
+\vspace{-1.2em}
 \paragraph{BERT Multilingual}
 {\small
 \begin{itemize}
     \item Positive precision: 0.8599 (strongest)
     \item Negative recall: 0.6703 (weakest)
     \item Frequently mislabels mild sentiment as Neutral
-    \item Confusion matrix reveals strong spillover from Positive $\rightarrow$ Neutral (60 instances)
+    \item Confusion matrix reveals strong spillover from Positive $\rightarrow$ Neutral with 60 instances
 \end{itemize}
 }
 
+\vspace{-1.2em}
 \paragraph{Sentiment-BERT}
 {\small
 \begin{itemize}
     \item Highest precision, recall, and F1 across all classes
-    \item Strong Neutral detection (Recall = 0.8432)
-    \item Robust separation between Positive and Negative classes
-    \item Lowest overall misclassification rate
+    \item Best detection of Neutral sentiment with Recall is 0.8432
+    \item More robust separation between Positive and Negative
+    \item Lower misclassification rate overall as shown in its confusion matrix
 \end{itemize}
 }
 
+\vspace{-1.2em}
 \paragraph{Twitter-RoBERTa}
 {\small
 \begin{itemize}
-    \item Strong Positive precision: 0.84
-    \item Strong Negative precision: 0.80
-    \item More balanced than BERT Multilingual
-    \item Slightly weaker Neutral recall compared to Sentiment-BERT
+    \item Strong Positive Precision - 0.84
+    \item Strong Negative Precision - 0.80
+    \item More balanced performance than BERT Multilingual
+    \item Slightly inferior to Sentiment-BERT on Neutral recall
     \item Tends to confuse borderline Negative/Neutral cases
 \end{itemize}
 }
 
-These trends imply that pretraining domain specificity—sentiment-focused,
-general-purpose, or Twitter-based—has a measurable effect on sentiment
-classification behaviour.
+These patterns imply that pretraining domain specificity, including Sentiment datasets vs. general-purpose vs. Twitter, corpora has a measurable impact on classification behaviour.
 
-\subsection{Confusion Matrix Analysis and Error Patterns}
+\subsection{Confusion Matrix Analysis}
+
 
 \paragraph{BERT Multilingual}
-The confusion matrix reveals systematic over-prediction of the Neutral class:
 {\small
 \begin{itemize}
-    \item 54 cases of Negative $\rightarrow$ Neutral
-    \item 60 cases of Positive $\rightarrow$ Neutral
-    \item Only 7 cases of Neutral $\rightarrow$ Positive
-\end{itemize}
-}
+    \item 54 cases: Neutral mispredictions for Negative
+    \item 60 cases: Neutral mispredictions for Positive
+    \item Strong preference to classify ambiguous emotions as Neutral
+    \item Implies conservative sentiment boundaries and difficulty with informal tone
+\end{itemize}}
 
-This suggests a conservative decision boundary, likely due to multilingual
-pretraining that lacks Twitter-specific cues such as sarcasm, ellipsis, or
-informal intensifiers.
-
+\vspace{-1.2em}
 \paragraph{Sentiment-BERT}
 {\small
 \begin{itemize}
-    \item Very low Positive $\rightarrow$ Negative confusion (6 cases)
-    \item Strong polarity identification overall
-    \item Occasional Negative $\rightarrow$ Neutral leakage (54 cases)
+    \item Cleanest separation among classes
+    \item Very low cross-polarity confusion, such as 6 cases: Positive $\rightarrow$ Negative
+    \item Strong Neutral recall with 199 cases correct, indicating better understanding of ambiguous expressions
 \end{itemize}}
-Compared to BERT Multilingual, this model maintains a more balanced treatment of
-all three sentiment labels.
 
+\vspace{-1.2em}
 \paragraph{Twitter-RoBERTa}
 {\small
 \begin{itemize}
-    \item 49 cases of Negative $\rightarrow$ Neutral
-    \item 26 cases of Neutral $\rightarrow$ Negative
-    \item Strong Positive classification (156 correct)
-    \item Struggles with sarcasm and subtle negativity despite Twitter-based pretraining
+    \item Balanced overall but less stable than Sentiment-BERT
+    \item Higher Negative $\leftrightarrow$ Neutral swaps: 49 cases and 26 cases
+    \item Robust Positive sentiment identification, with 156 cases correct
 \end{itemize}}
-This aligns with prior literature showing that social-media pretrained models
-capture lexical variation well but require sentiment-specific training for finer
-polarity distinctions.
+
+
+\subsection{Error Analysis}
+
+Common sources of error across all models include:
+{\small
+\begin{itemize}
+    \item \textbf{Sarcasm and irony} \\
+    ``yeah amazing job\ldots'' --- actually negative, but predicted as neutral.  
+    Models lack explicit sarcasm-handling ability.
+
+    \item \textbf{Implicit sentiment} \\
+    ``wish the app worked better'' --- expresses negative intent without explicit emotional keywords.
+
+    \item \textbf{Mixed sentiment} \\
+    ``love the screen, hate the battery life''
+
+    \item \textbf{Short or context-poor tweets} \\
+    Single-token posts such as ``great'', ``wow'', ``ok'', where polarity depends heavily on external context.
+
+    \item \textbf{Lexical ambiguity} \\
+    Words like \textit{fine}, \textit{ok}, and \textit{sick} vary in meaning by speaker and domain.
+\end{itemize}}
+
+These patterns match prior findings in Twitter sentiment modeling literature and align with the analysis trends in Section~7 of the cited ACL 2022 paper.
+
+\subsection{Comparison Across Models}
+
+A consistent ranking emerges across all metrics:
+
+{\small
+\begin{itemize}
+    \item \textbf{Sentiment-BERT (best)}
+    \item \textbf{Twitter-RoBERTa}
+    \item \textbf{BERT Multilingual (worst)}
+\end{itemize}}
+
+\vspace{-1.2em}
+\paragraph{Interpretation:}
+
+{\small
+\begin{itemize}
+    \item \textbf{Sentiment-BERT} benefits from pretraining directly on sentiment corpora, leading to superior generalization.
+    \item \textbf{Twitter-RoBERTa} benefits from social media text modeling but lacks explicit polarity supervision.
+    \item \textbf{BERT Multilingual} is trained on multilingual data, and its sentiment head is less aligned with informal, sarcastic, or domain-specific text.
+\end{itemize}}
+
+This demonstrates that \textbf{pretraining domain and task alignment are essential} for effective sentiment classification.
+
+\subsection{Summary of Findings}
+
+{\small
+\begin{itemize}
+    \item \textbf{Sentiment-BERT} provides the most accurate and stable performance, achieving \textbf{0.7712 accuracy} and \textbf{0.7737 macro F1}.
+    \item \textbf{Twitter-RoBERTa} performs competitively but struggles with ambiguity around the Neutral boundary.
+    \item \textbf{BERT Multilingual} displays the weakest polarity distinctions.
+    \item The \textbf{Neutral class remains the primary source of error} across all models.
+    \item \textbf{Dataset heterogeneity} increases robustness yet simultaneously introduces more ambiguity.
+    \item Error patterns such as \textit{sarcasm, implicit sentiment, and mixed polarity} align with challenges documented in prior research.
+\end{itemize}}
+
 
 
 \section{Conclusion (5pt)}
