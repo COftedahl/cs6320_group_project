@@ -256,7 +256,7 @@ The above listing details how the datasets are tokenized. This method is called 
 \label{lst:eg}
 \end{listing}
 
-Finally, the metrics must be provided to the Trainer to allow it to update the weights of the model properly. Thus, the above lists the evaluation methods used for training. Using the confusion matrix approach, the predictions are checked against the reference labels to provide loss in the training loop. 
+Finally, the metrics must be provided to the Trainer to allow it to evaluate its performance during training. Using the confusion matrix approach, the predictions are checked against the reference labels evaluate the performance of the model in the training cycle. 
 
 The other portion of code written specifically for language processing tasks was the use of VADER. For this, the python package vaderSentiment was used, specifically utilizing the SentimentIntensityAnalyzer for computing a baseline sentiment prediction for the datasets. Much of this code is also based on the documentation for the vaderSentiment package. 
 
