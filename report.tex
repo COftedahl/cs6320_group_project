@@ -31,9 +31,9 @@
 \todo{The ﬁrst paragraph should brieﬂy describe task and data.}
 \todo{The second paragraph should brieﬂy describe your approach. Try to motivate it.}
 \todo{The third paragraph should describe your main experiments and results, including mentioning the data you use.}
-Sentiment analysis aspires to determine the emotional polarity expressed in natural language and is typically categorized into three classes: positive, negative, and neutral. Although this task has continuously been widely explored, social media platforms, especially Twitter, bring up unique challenges. The language in social media is very informal, with creative spelling and punctuation, misspellings, slang, new words, URLs, and genre-specific terminology and abbreviations, e.g., RT for re-tweet and \#hashtags1[1].  In order to train and evaluate our project, we combine several publicly available tweet datasets, including Sentiment140, the Mass Twitter dataset, the Chirps dataset, and additional cleaned tweet corpora spanning multiple years and topics. Gathering these datasets can yield an extensive, heterogeneous collection suitable for both small- and large-scale experiments.
+Sentiment analysis aspires to determine the emotional polarity expressed in natural language and is typically categorized into three classes: positive, negative, and neutral. Although this task has continuously been widely explored, social media platforms, especially Twitter, bring up unique challenges. The language in social media is very informal, with creative spelling and punctuation, misspellings, slang, new words, URLs, and genre-specific terminology and abbreviations, e.g., RT for re-tweet and \#hashtags1[1].  In order to train and evaluate our project, we combine several publicly available tweet datasets, including Sentiment140, and two additional tweet corpora spanning multiple years and topics. Gathering these datasets can yield an extensive, heterogeneous collection suitable for both small- and large-scale experiments.
 
-With the growing availability of large-scale Tweet datasets spanning several years and different topics, it has evolved increasingly critical to develop sentiment classification systems. These systems not only perform well on small, accurate datasets but also scale to enormous, heterogeneous corpora. Modern transformer-based language models, such as BERT and RoBERTa, have demonstrated powerful performance in many NLP tasks due to their contextual understanding. Classical lexicon-based tools, such as VADER, stay widely used for real-time or resource-constrained sentiment inference. In recent years, large-language models (LLMs), such as LLaMA, have made it feasible to fine-tune powerful generative architectures on domain-specific tasks, enabling improvements when working with massive datasets.
+With the growing availability of large-scale Tweet datasets spanning several years and different topics, it has evolved increasingly critical to develop sentiment classification systems. These systems not only perform well on small, homogenious datasets but also scale to enormous, heterogeneous corpora. Modern transformer-based language models, such as BERT and RoBERTa, have demonstrated powerful performance in many NLP tasks due to their contextual understanding. Classical lexicon-based tools, such as VADER, stay widely used for real-time or resource-constrained sentiment inference. In recent years, large-language models (LLMs), such as LLaMA, have made it feasible to fine-tune powerful generative architectures on domain-specific tasks, enabling improvements when working with massive datasets.
 
 We run many experiments across datasets of different sizes to analyze how model performance changes with increasing dataset size. Using the combined Tweet datasets from several sources, we train and evaluate several models on consistent train, validation, and test splits. Our results show that transformer models outperform classical baselines, with RoBERTa gaining the strongest performance on medium-sized datasets. When scaling to the largest combined dataset, the LLaMA-based model gains the highest accuracy. Also, it demonstrates its advantage in capturing subtle sentiment features in large, diverse Tweet corpora. These findings emphasize the importance of both dataset scale and model capacity in Twitter sentiment classification. 
 
@@ -45,19 +45,19 @@ We run many experiments across datasets of different sizes to analyze how model 
 \section{Data (5pt)}
 
 \todo{Describe the data you use, including how many examples are in the training, development, and test sets.}
-In this project, we form a sentiment classification system using a massive combined Twitter corpus derived from multiple public datasets. We parsed and normalized data from Sentiment140, the Mass Twitter dataset, and the Chirps dataset. And additional labeled Tweet collections. After parsing and normalizing the datasets, we gather and unify all entries into a consistent three-class sentiment format, including positive, neutral, and negative. Then, we apply our preprocessing pipeline, which cleans noise, removes URLs, and standardizes tokens. In the meantime, we split the resulting corpus into three equal partitions. The final training set contains 168,747 tweets, and both the development set and test set have 168,747 tweets each. These amounts ensure balanced experimentation across all models. These split methods allow us to ensure balanced and consistent evaluation across all models used in the study.
+In this project, we form a sentiment classification system using a massive combined Twitter corpus derived from multiple public datasets. We parsed and normalized data from Sentiment140, Twitter Tweets Sentiment Dataset, Sentiment Analysis of Tweets dataset and additional labeled Tweet collections. After parsing and normalizing the datasets, we gather and unify all entries into a consistent three-class sentiment format, consisting of positive, neutral, and negative. Then, we apply our preprocessing pipeline, which cleans noise, removes URLs, and standardizes tokens. In the meantime, we split the resulting corpus into three equal partitions for training, validation, and testing. 
 \begin{table}[h!]
 \centering
 \begin{tabular}{lccc}
 \hline
 \textbf{Dataset Split} & \textbf{Number of Examples} \\
 \hline
-Training Set     &  \texttt{168,747} \\
-Development Set  &  \texttt{168,747} \\
-Test Set         &  \texttt{168,747} \\
+Training Set     &  \texttt{1,329,985} \\
+Validation Set  &  \texttt{168,748} \\
+Test Set         &  \texttt{168,748} \\
 \hline
 \end{tabular}
-\caption{Number of examples in the training, development, and test sets.}
+\caption{Number of examples in the training, Validation, and test sets.}
 \label{tab:dataset_splits}
 \end{table}
 
@@ -79,13 +79,12 @@ In this section, we explain the data preparation pipeline, model training proced
 
 \subsection{Data Sources and Integration}
 
-To create a general-purpose sentiment classification corpus, we aggregated four publicly available tweet-based datasets:
+To create a general-purpose sentiment classification corpus, we aggregated three publicly available tweet-based datasets:
 
 \begin{itemize} \small
     \item \textbf{Sentiment\_Analysis.csv}: A collection of labeled English posts annotated for positive, negative, or neutral sentiment.
     \item \textbf{Sentiment140.csv}: A large-scale Twitter dataset containing polarity-annotated tweets collected across multiple years.
     \item \textbf{Tweets.csv}: A mixed-source Twitter dataset containing short informal posts covering diverse subjects.
-    \item \textbf{Smile.csv}: A sentiment dataset with three normalized labels (positive, neutral, negative).
 \end{itemize}
 
 Even though these datasets originate from different time periods and subject domains, their sentiment labels were standardized to a unified three-class scheme:
@@ -99,7 +98,7 @@ Even though these datasets originate from different time periods and subject dom
 }
 
 
-This merging procedure allows us to form a wide, diverse, and domain-irrelevant sentiment corpus suitable for evaluating the robustness of modern language models.
+This merging procedure allows us to form a wide, diverse, and domain-agnostic sentiment corpus suitable for evaluating the robustness of modern language models.
 
 \subsection{Data Preprocessing and Normalization}
 \label{sec:preprocessing}
@@ -108,7 +107,7 @@ Before building the final train, validation, and test splits, all raw data files
 {\small
 \begin{itemize}
     \item \textbf{URL, hashtag, and username removal:}  
-    Links such as \texttt{http://...} and user handles like \texttt{@name} are stripped using the \texttt{cleanLine} function.
+    Links such as \texttt{http://...} and user handles like \texttt{@name} are stripped using the \texttt{cleanLine} function @'s were replaced by a token.
 
     \item \textbf{Consistent text formatting:}  
     All text is converted to lowercase and cleaned from excessive whitespace or punctuation.
