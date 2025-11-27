@@ -1,5 +1,5 @@
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from constants import exampleSentences, SENTIMENT_RESULT_ENUM, SENTIMENT_RESULT_ARR, TRAINING_DATA_PATH, TEXT_COLUMN_NAME, VALUE_COLUMN_NAME
+from constants import exampleSentences, SENTIMENT_RESULT_ENUM, SENTIMENT_RESULT_ARR, TRAINING_DATA_PATH, TEXT_COLUMN_NAME, VALUE_COLUMN_NAME, VAL_DATA_PATH, TEST_DATA_PATH
 from FileParser import FileParser
 from tqdm import tqdm
 
@@ -54,13 +54,19 @@ def saveToFile(path, content):
 
 if __name__ == '__main__':
   fileParser = FileParser()
-  trainingData = fileParser.parseFile(TRAINING_DATA_PATH, constantAdded=1)
+  trainingData1 = fileParser.parseFile(TRAINING_DATA_PATH, constantAdded=1)
+  trainingData2 = fileParser.parseFile(TEST_DATA_PATH, constantAdded=1)
+  trainingData3 = fileParser.parseFile(VAL_DATA_PATH, constantAdded=1)
+  trainingData = dict({TEXT_COLUMN_NAME: trainingData1[TEXT_COLUMN_NAME] + trainingData2[TEXT_COLUMN_NAME] + trainingData3[TEXT_COLUMN_NAME], 
+                       VALUE_COLUMN_NAME: trainingData1[VALUE_COLUMN_NAME] + trainingData2[VALUE_COLUMN_NAME] + trainingData3[VALUE_COLUMN_NAME]})
   # sentences = trainingData
+  print("first 10 training strings: " + str(trainingData[TEXT_COLUMN_NAME][:10]))
   analyzer = SentimentIntensityAnalyzer()
   predictions = []
   print("Predicting labels...")
   
   for sentence in tqdm(trainingData[TEXT_COLUMN_NAME]):
+    # print("testing sentence: " + str(sentence))
     vs = analyzer.polarity_scores(sentence)
     label = getOverallSentiment(vs)
     # print("{:-<65} Result: {}, Compund Score: {}".format(sentence, str(SENTIMENT_RESULT_ARR[label.value]), str(vs['compound'])))
