@@ -35,7 +35,7 @@ Sentiment analysis aspires to determine the emotional polarity expressed in natu
 
 With the growing availability of large-scale Tweet datasets spanning several years and different topics, it has evolved increasingly critical to develop sentiment classification systems. These systems not only perform well on small, homogenious datasets but also scale to enormous, heterogeneous corpora. Modern transformer-based language models, such as BERT and RoBERTa, have demonstrated powerful performance in many NLP tasks due to their contextual understanding. Classical lexicon-based tools, such as VADER, stay widely used for real-time or resource-constrained sentiment inference. In recent years, large-language models (LLMs), such as LLaMA, have made it feasible to fine-tune powerful generative architectures on domain-specific tasks, enabling improvements when working with massive datasets.
 
-We run many experiments across datasets of different sizes to analyze how model performance changes with increasing dataset size. Using the combined Tweet datasets from several sources, we train and evaluate several models on consistent train, validation, and test splits. Our results show that transformer models outperform classical baselines, with RoBERTa gaining the strongest performance on medium-sized datasets. When scaling to the largest combined dataset, the LLaMA-based model gains the highest accuracy. Also, it demonstrates its advantage in capturing subtle sentiment features in large, diverse Tweet corpora. These findings emphasize the importance of both dataset scale and model capacity in Twitter sentiment classification. 
+We run many experiments across datasets of different sizes to analyze how model performance changes with increasing dataset size. Using the combined Tweet datasets from several sources, we train and evaluate several models on consistent train, validation, and test splits. Our results show that transformer models outperform classical baselines, with RoBERTa gaining the strongest performance on medium-sized datasets. The transformer models demonstrate an advantage in capturing subtle sentiment features in large, diverse Tweet corpora. These findings emphasize the importance of both dataset scale and model architecture and capacity in Twitter sentiment classification. 
 
 
 % \section{Task (5pt)}
@@ -148,8 +148,6 @@ The project primarily experiments with transformer-based architectures due to th
     \texttt{cardiffnlp/\allowbreak twitter-roberta-base-sentiment-latest}
 
     \item \textbf{BERT-based sentiment models} from HuggingFace
-
-    \item \textbf{(Planned)} LLaMA-based fine-tuning for comparison
 
     \item \textbf{VADER:} a lexicon-based baseline
 \end{itemize}
