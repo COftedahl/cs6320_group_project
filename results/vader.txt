@@ -1,1 +1,1 @@
-{'number of predictions: ': 1667481, 'recall': 0.0595746862045325, 'accuracy': 0.6745863970863836, 'precision': 0.024350385761650106, 'f1': 0.03457051764684012}
+{'number of predictions: ': 1667481, 'recall': 0.348344073130526, 'accuracy': 0.6745863970863836, 'precision': 0.024350385761650106, 'f1': 0.045518855223800225, 'confusion matrix': {'Predictions for true negative label': {0: 4011, 1: 15175, 2: 2219}, 'Predictions for true netural label': {0: 146567, 1: 1111551, 2: 370325}, 'Predictions for true positive label': {0: 208, 1: 8127, 2: 9298}}}

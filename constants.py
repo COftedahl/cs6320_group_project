@@ -10,6 +10,7 @@ VAL_DATA_PATH = FINAL_DATA_PATH + "val.csv"
 USER_AT_TOKEN = "<atToken>"
 TEXT_COLUMN_NAME = "text"
 VALUE_COLUMN_NAME = "label"
+RESULTS_DIR = "./results/"
 
 class MODEL_OPTIONS(Enum):
   BERT_MULTILINGUAL = "nlptown/bert-base-multilingual-uncased-sentiment" # "https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment"
@@ -32,4 +33,9 @@ SENTIMENT_RESULT_ARR = [
   "Neutral", 
   "Positive", 
 ]
+
+SAVED_MODEL_RESULTS = {
+  "model_name": ["BERT_Multilingual", "Sentiment_BERT", "Twitter_RoBERTa"], 
+  "test_accuracy": [0.723, 0.771, 0.757]
+}
 # https://solutionfall.com/question/why-is-the-model-not-returning-loss-from-inputs-in-trainertrain-resulting-in-a-valueerror/#:~:text=To%20address%20this%20issue%20and%20ensure%20that%20the,returns%20the%20loss%20value%20in%20the%20%60compute_loss%60%20function.
