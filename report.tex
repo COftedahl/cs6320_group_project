@@ -16,7 +16,7 @@
 \title{CS6320: Final Project Report \\ \begin{small}\url{https://github.com/COftedahl/cs6320_group_project}\end{small}}
 \author{Brendan Martel \\ BXM240013
     \and Cole Oftedahl \\ CXO220001
-    \and Bradley Evan Stover \\ BES170230
+    \and Brad Stover \\ BES170230
     \and Zhaotong Zhang \\ ZXZ220016}
 \date{}
 
@@ -31,11 +31,11 @@
 \todo{The ﬁrst paragraph should brieﬂy describe task and data.}
 \todo{The second paragraph should brieﬂy describe your approach. Try to motivate it.}
 \todo{The third paragraph should describe your main experiments and results, including mentioning the data you use.}
-Sentiment analysis aspires to determine the emotional polarity expressed in natural language and is typically categorized into three classes: positive, negative, and neutral. Although this task has continuously been widely explored, social media platforms, especially Twitter, bring up unique challenges. The language in social media is very informal, with creative spelling and punctuation, misspellings, slang, new words, URLs, and genre-specific terminology and abbreviations, e.g., RT for re-tweet and \#hashtags1[1].  In order to train and evaluate our project, we combine several publicly available tweet datasets, including Sentiment140, and two additional tweet corpora spanning multiple years and topics. Gathering these datasets can yield an extensive, heterogeneous collection suitable for both small- and large-scale experiments.
+Sentiment analysis aspires to determine the emotional polarity expressed in natural language and is typically categorized into three classes: positive, negative, and neutral. Although this task has continuously been widely explored, social media platforms--especially Twitter--bring up unique challenges. The language in social media is very informal, with creative spelling and punctuation, misspellings, slang, new words, URLs, and genre-specific terminology and abbreviations, e.g., RT for re-tweet and \#hashtags1[1].  In order to train and evaluate our project, we combine several publicly available tweet datasets, including Sentiment140 and two additional tweet corpora spanning multiple years and topics. Gathering these datasets can yield an extensive and heterogeneous collection suitable for both small- and large-scale experiments.
 
-With the growing availability of large-scale Tweet datasets spanning several years and different topics, it has evolved increasingly critical to develop sentiment classification systems. These systems not only perform well on small, homogenious datasets but also scale to enormous, heterogeneous corpora. Modern transformer-based language models, such as BERT and RoBERTa, have demonstrated powerful performance in many NLP tasks due to their contextual understanding. Classical lexicon-based tools, such as VADER, stay widely used for real-time or resource-constrained sentiment inference. In recent years, large-language models (LLMs), such as LLaMA, have made it feasible to fine-tune powerful generative architectures on domain-specific tasks, enabling improvements when working with massive datasets.
+With the growing availability of large-scale Tweet datasets spanning several years and different topics, it has become increasingly critical to develop sentiment classification systems. These systems not only perform well on small, homogeneous datasets; they also scale to enormous, heterogeneous corpora. Modern transformer-based language models, such as BERT and RoBERTa, have demonstrated powerful performance in many NLP tasks due to their contextual understanding. Classical lexicon-based tools, such as VADER, remain widely used for real-time or resource-constrained sentiment inference. In recent years, large-language models (LLMs), such as LLaMA, have made it feasible to fine-tune powerful generative architectures on domain-specific tasks, enabling improvements when working with massive datasets.
 
-We run many experiments across datasets of different sizes to analyze how model performance changes with increasing dataset size. Using the combined Tweet datasets from several sources, we train and evaluate several models on consistent train, validation, and test splits. Our results show that transformer models outperform classical baselines, with RoBERTa gaining the strongest performance on medium-sized datasets. The transformer models demonstrate an advantage in capturing subtle sentiment features in large, diverse Tweet corpora. These findings emphasize the importance of both dataset scale and model architecture and capacity in Twitter sentiment classification. 
+We run many experiments across datasets of different sizes to analyze how model performance changes with increasing dataset size. Using the combined Tweet datasets from several sources, we train and evaluate several models on consistent training, validation, and testing splits. Our results show that transformer models outperform classical baselines, with RoBERTa exhibiting the strongest performance on medium-sized datasets. The transformer models demonstrate an advantage in capturing subtle sentiment features in large and diverse Tweet corpora. These findings emphasize the importance of both dataset scale and model architecture/capacity in Twitter sentiment classification. 
 
 
 % \section{Task (5pt)}
@@ -45,7 +45,7 @@ We run many experiments across datasets of different sizes to analyze how model 
 \section{Data (5pt)}
 
 \todo{Describe the data you use, including how many examples are in the training, development, and test sets.}
-In this project, we form a sentiment classification system using a massive combined Twitter corpus derived from multiple public datasets. We parsed and normalized data from Sentiment140, Twitter Tweets Sentiment Dataset, Sentiment Analysis of Tweets dataset and additional labeled Tweet collections. After parsing and normalizing the datasets, we gather and unify all entries into a consistent three-class sentiment format, consisting of positive, neutral, and negative. Then, we apply our preprocessing pipeline, which cleans noise, removes URLs, and standardizes tokens. In the meantime, we split the resulting corpus into three equal partitions for training, validation, and testing. 
+In this project, we formed a sentiment classification system using a massive combined Twitter corpus derived from multiple public datasets. We parsed and normalized data from Sentiment140, Twitter Tweets Sentiment Dataset, Sentiment Analysis of Tweets dataset, and additional labeled Tweet collections. After doing this, we gathered and unified all entries into a consistent three-class sentiment format consisting of positive, neutral, and negative sentiments. Then we applied our preprocessing pipeline, which cleaned noise, removed URLs, and standardized tokens. In the meantime, we split the resulting corpus into three equal partitions for training, validation, and testing. 
 \begin{table}[h!]
 \centering
 \begin{tabular}{lccc}
@@ -75,7 +75,7 @@ Test Set         &  \texttt{168,748} \\
 \red{If your project is more analysis-based and propose how to analyze model behaviors/outputs}
 
 \todo{Section 4 of \cite{das-etal-2022-automatic} is an example. If you do manual inspections, please provide the details such as analysis/annotation guidelines.}
-In this section, we explain the data preparation pipeline, model training procedures, evaluation setup, and the manual analysis framework used to study and analyze model behaviors.  Our methodology follows the general structure of Section 4 in Das et al. (2022), which focuses on automated metrics and on qualitative inspection and error categorization to better understand and learn from the model outputs.
+In this section, we explain the data preparation pipeline, model training procedures, evaluation setup, and manual analysis framework used to study and analyze model behaviors.  Our methodology follows the general structure of Section 4 in Das et al. (2022), which focuses on automated metrics and on qualitative inspection and error categorization to better understand and learn from the model outputs.
 
 \subsection{Data Sources and Integration}
 
@@ -84,7 +84,7 @@ To create a general-purpose sentiment classification corpus, we aggregated three
 \begin{itemize} \small
     \item \textbf{Sentiment\_Analysis.csv}: A collection of labeled English posts annotated for positive, negative, or neutral sentiment.
     \item \textbf{Sentiment140.csv}: A large-scale Twitter dataset containing polarity-annotated tweets collected across multiple years.
-    \item \textbf{Tweets.csv}: A mixed-source Twitter dataset containing short informal posts covering diverse subjects.
+    \item \textbf{Tweets.csv}: A mixed-source Twitter dataset containing short and informal posts covering diverse subjects.
 \end{itemize}
 
 Even though these datasets originate from different time periods and subject domains, their sentiment labels were standardized to a unified three-class scheme:
@@ -103,29 +103,29 @@ This merging procedure allows us to form a wide, diverse, and domain-agnostic se
 \subsection{Data Preprocessing and Normalization}
 \label{sec:preprocessing}
 
-Before building the final train, validation, and test splits, all raw data files underwent a unified preprocessing stage:
+Before building the final training, validation, and testing splits, all raw data files underwent a unified preprocessing stage:
 {\small
 \begin{itemize}
     \item \textbf{URL and username removal:}  
-    Links such as \texttt{http://...} and user handles like \texttt{@name} are stripped using the \texttt{cleanLine} function @'s were replaced by a token.
+    Links such as \texttt{http://...} and user handles like \texttt{@name} were stripped using the \texttt{cleanLine} function; @'s were replaced by a token.
 
     \item \textbf{Consistent text formatting:}  
-    All text is converted to lowercase and cleaned from excessive whitespace or punctuation.
+    All text was converted to lowercase and cleaned from excessive whitespace or punctuation.
 
     \item \textbf{Character filtering:}  
-    Non-English characters and redundant punctuation marks are removed or collapsed.
+    Non-English characters and redundant punctuation marks were removed or collapsed.
 
     \item \textbf{Label normalization:}  
-    Dataset-specific labels (e.g., $-1$, $0$, $1$) are normalized to the range $0$--$2$ through a constant shift.
+    Dataset-specific labels (e.g., $-1$, $0$, $1$) were normalized to the range $0$--$2$ through a constant shift.
 \end{itemize}
 }
 
-After preprocessing, each dataset is written in the format:
+After preprocessing, each dataset was written in the format:
 \[
 \{ \text{sentence}, \text{label} \}.
 \]
 
-The \texttt{splitData()} routine is then executed to construct the final splits:
+The \texttt{splitData()} routine was then executed to construct the final splits:
 {\small
 \begin{itemize}
     \item \textbf{80\% Training set:} \texttt{train.csv}
@@ -134,14 +134,14 @@ The \texttt{splitData()} routine is then executed to construct the final splits:
 \end{itemize}
 }
 
-This split guarantees that all models are trained and evaluated on the same unified distribution.
+This split guaranteed that all models were trained and evaluated on the same unified distribution.
 
 % ---------------------------------------------------------
 
 \subsection{Model Architecture and Training Procedure}
 \label{sec:models}
 
-The project primarily experiments with transformer-based architectures due to their state-of-the-art performance in text classification. The implemented and planned models include:
+The project primarily experimented with transformer-based architectures due to their state-of-the-art performance in text classification. The implemented and planned models include:
 {\small
 \begin{itemize}
     \item \textbf{RoBERTa Twitter:}
@@ -167,9 +167,9 @@ All transformer models are fine-tuned using HuggingFace’s \texttt{Trainer} wit
 \end{itemize}
 }
 
-The same train/validation/test splits are used for all models to ensure a fair comparison across different architectures.
+The same training/validation/testing splits were used for all models in order to ensure a fair comparison across different architectures.
 
-VADER, as a non-transformer, is used as a baseline against which to evaluate the transformer models. In this study, VADER is not trained, but is used to provide baseline classification scores by being run on a concatenation of all the datasets and evaluating its performance. 
+VADER, as a non-transformer, was used as a baseline against which to evaluate the transformer models. In this study, VADER was not trained, but it was used to provide baseline classification scores by being run on a concatenation of all the datasets and evaluating its performance. 
 
 \section{Implementations (15pt)}
 
@@ -177,9 +177,9 @@ VADER, as a non-transformer, is used as a baseline against which to evaluate the
 When describing your implementation details (e.g. decoding), we suggest that you include corresponding but only \textbf{important} code pieces (e.g. classes, data structures, algorithms. It may be in the form of a screenshot or latex source code like in Listing~\ref{lst:eg}).
 }
 
-The transformer models were implemented using the HuggingFace transformers library in python. Since multiple different models were evaluated, abstractions were used to allow simple reuse by passing a different parameter to indicate which model to use. 
+The transformer models were implemented using the HuggingFace transformers library in Python. Since multiple different models were evaluated, abstractions were used to allow simple reuse by passing a different parameter to indicate which model to use. 
 
-To this end, the LanguageModel class was developed, incorporating a constructor method as well as train and test methods. Development of this class was largely based on the documentation available from HuggingFace, and thus the class closely follows example code from the provided tutorials. 
+To this end, the LanguageModel class was developed, incorporating a constructor method as well as training and testing methods. Development of this class was largely based on the documentation available from HuggingFace, and thus the class closely follows example code from the provided tutorials. 
 
 \begin{listing}[H]
 \begin{minted}[frame=single,framesep=10pt]{python}
@@ -214,7 +214,7 @@ def train(self, trainData,
 \label{lst:eg}
 \end{listing}
 
-The train method is more complex, requiring setup to utilize the provided Trainer interface from the transformers library. First, the method accepts the training dataset "trainData", and accepts "trainingArgs" to define parameters for the training. To implement the training, the Trainer class is used, which requires the training data to be tokenized and requires providing compute metrics, which allow the model to accurately compute the loss for each pass. 
+The train method is more complex, requiring setup to utilize the provided Trainer interface from the transformers library. First, the method accepts the training dataset "trainData", and then accepts "trainingArgs" to define parameters for the training. To implement the training, the Trainer class is used, which requires the training data to be tokenized and also requires providing compute metrics, which allow the model to accurately compute the loss for each pass. 
 
 \begin{listing}[H]
 \begin{minted}[frame=single,framesep=10pt]{python}
@@ -256,7 +256,7 @@ The above listing details how the datasets are tokenized. This method is called 
 
 Finally, the metrics must be provided to the Trainer to allow it to evaluate its performance during training. Using the confusion matrix approach, the predictions are checked against the reference labels evaluate the performance of the model in the training cycle. 
 
-The other portion of code written specifically for language processing tasks was the use of VADER. For this, the python package vaderSentiment was used, specifically utilizing the SentimentIntensityAnalyzer for computing a baseline sentiment prediction for the datasets. Much of this code is also based on the documentation for the vaderSentiment package. 
+The other portion of code written specifically for language processing tasks was the use of VADER. For this, the Python package vaderSentiment was used, specifically utilizing the SentimentIntensityAnalyzer for computing a baseline sentiment prediction for the datasets. Much of this code is also based on the documentation of the vaderSentiment package. 
 
 \begin{listing}[H]
 \begin{minted}[frame=single,framesep=10pt]{python}
@@ -299,7 +299,7 @@ def getOverallSentiment(sentiment):
 \label{lst:eg}
 \end{listing}
 
-The above listing details the thresholds used for classifications, which are based on the thresholds used in the documentation. Based on the compound score, a negative score below the threshold is classified as negative sentiment, a positive score above the threshold is positive sentiment, and any other score is neutral. 
+The above listing details the thresholds used for classifications, which are based on the thresholds used in the documentation. Based on the compound score, a negative score below the threshold is classified as negative sentiment, a positive score above the threshold as positive sentiment, and any other score as neutral. 
 
 \section{Experiments and Results (45pt)}
 
@@ -342,8 +342,8 @@ VADER & 0.6746 & 0.0244 & 0.3483 & 0.0455 \\
 \end{tabular}
 \end{table*}
 
-VADER performs the worst of all the models, which is expected as it does not follow the transformer architecture and because VADER is not trained on the Twitter data before testing, as the transformer models are. 
-Sentiment-BERT achieves the best overall results with 77.12\% accuracy and 0.7737
+VADER performed the worst of all the models, which was expected, as it does not follow the transformer architecture and also because VADER is not trained on the Twitter data before testing (like the transformer models are). 
+Sentiment-BERT achieved the best overall results with 77.12\% accuracy and 0.7737
 macro F1, outperforming both BERT Multilingual and Twitter-RoBERTa.
 This aligns with expectations: Sentiment-BERT is explicitly trained for sentiment
 classification, whereas BERT Multilingual supports broader multilingual tasks,
@@ -351,7 +351,7 @@ and Twitter-RoBERTa is optimized for tweet semantics but not solely sentiment.
 
 \subsection{Class-Level Performance}
 
-Across every model, the Neutral class consistently obtains the highest recall but the lowest precision. It reflects the dataset’s inherent ambiguity and the linguistic overlap between mild positive, mild negative, and neutral tweets.
+Across every model, the neutral class consistently obtained the highest recall but the lowest precision. It reflects the dataset’s inherent ambiguity and the linguistic overlap between mild positive, mild negative, and neutral tweets.
 
 \vspace{-1.2em}
 \paragraph{BERT Multilingual}
@@ -387,7 +387,7 @@ Across every model, the Neutral class consistently obtains the highest recall bu
 \end{itemize}
 }
 
-These patterns imply that pretraining domain specificity, including Sentiment datasets vs. general-purpose vs. Twitter, corpora has a measurable impact on classification behaviour.
+These patterns imply that pretraining domain specificity--including Sentiment datasets vs. general-purpose vs. Twitter corpora--has a measurable impact on classification behaviour.
 
 \subsection{Confusion Matrix Analysis}
 
@@ -483,7 +483,7 @@ This demonstrates that \textbf{pretraining domain and task alignment are essenti
 \section{Conclusion (5pt)}
 \todo{Brief conclusion summarizing findings (from both numerical results and qualitative analysis).}
 
-Sentiment analysis can be performed to a high degree of accuracy using modern technologies such as large-scale transformers trained to be attuned to the specific task, while older or non-trained styles of language models fail to achieve the same accuracy in their performance. However, even when using these modern models, difficulties present in the nuance of natural language, particularly in a realm of less grammatically-structured text as in social media, can cause inaccuracies in sentiment classification. Additionally, further work may need to be done to improve the ability of models specifically to identify neutral sentiment, which posed the most challenging. 
+Sentiment analysis can be performed to a high degree of accuracy using modern technologies such as large-scale transformers trained to be attuned to the specific task, while older or non-trained styles of language models fail to achieve the same accuracy in their performance. However, even when using these modern models, difficulties present in the nuance of natural language--particularly in a realm of less grammatically-structured text (as in social media)--can cause inaccuracies in sentiment classification. Additionally, further work may need to be done to improve the ability of models to identify neutral sentiment, which posed the greatest challenge. 
 
 For most sentiment classification tasks, transformer models such as BERT and RoBERTa will achieve sufficient accuracy given they are trained on a sufficiently large and quality dataset. While other model architectures are usable, particularly in resource-constrained contexts, transformer models remain the standard in sentiment analysis performance. 
 
